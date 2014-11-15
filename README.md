@@ -2,7 +2,7 @@
 Parallel Suffix Array on GPU
 ----------------------------
 
-##Dynamic Parallel Skew Algorithm for Suffix Array on GPU
+###Dynamic Parallel Skew Algorithm for Suffix Array on GPU
 
 ###AMCS 312 Final Project###
 
