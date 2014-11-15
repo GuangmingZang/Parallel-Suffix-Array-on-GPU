@@ -10,7 +10,7 @@ Parallel Suffix Array on GPU
 >
 >Email: liao.gang@kaust.edu.sa
 >
->Homepage: gangliao.me
+>Homepage: [gangliao.me](http://gangliao.me)
 >
 >King Abdullah University of Science and Technology (KAUST)
 >
