@@ -37,24 +37,30 @@ Parallel Suffix Array on GPU
 
 
 ##<a id =”Abstraction”>Abstraction</a>
-`Background` 
+
+###Background
+
 Suffix array has been widely used to store and retrieve numerous datasets in
 bioinformatics applications. Especially, for DNA sequence alignments in the initial 
 exact match phase of heuristic algorithms. In the era of post petascale computing, how
 to parallel those algorithms more efficiency is one of the most important things both academics and 
 industries need to figure out. 
 
-`My Work`
+###My Work
+
 The paper proposes a novel way to optimize dc3 algorithm for suffix array construction  using dynamic parallel model
 and typical parallel patterns - prefix sum and reduction. The comparative performance 
 evaluation with the state-of-the-art implementation is then carried out.
 
-`Conclusion`
+###Conclusion
+
 The study shows that massively parallel dc3 algorithm under heterogeneous architecture
 is an efficient approach to high-performance bioinformatics applications and web-search engines.
 
 ##<a id =”introduction”>Introdution</a>
-`Parallel Computing`
+
+###Parallel Computing
+
 From LLNL’s tutorials, parallel computing is the simultaneous use of multiple compute resources
 to solve a computational problem:
 
@@ -74,7 +80,8 @@ The compute resources are typically:
 1. A single computer with multiple processors/cores;
 2. An arbitrary number of such computers connected by a network.
 
-`GPU CUDA Programming`
+###GPU CUDA Programming
+
 In recent years, modern multi-core and many-core architectures have brought about a 
 revolution in high performance computing. Because it is now possible to incorporate 
 more and more processor cores into a single chip, the era of the many-core processor 
