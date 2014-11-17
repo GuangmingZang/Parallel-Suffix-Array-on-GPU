@@ -19,7 +19,7 @@ Parallel Suffix Array on GPU
 ##Content
 
 1. [Abstraction](#abstraction)
-1. [Introduction] (#introduction)
+1. [Introduction](#introduction)
     1. [Parallel Computing](#parallel)
     1. [CUDA GPU Programming](#GPU)
 1. [The Problem](#problem)
