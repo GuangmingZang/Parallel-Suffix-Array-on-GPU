@@ -59,7 +59,7 @@ is an efficient approach to high-performance bioinformatics applications and web
 
 ##<a id =”introduction”>Introdution</a>
 
-###Parallel Computing
+###<a id = “parallel”>Parallel Computing</a>
 
 From LLNL’s tutorials, parallel computing is the simultaneous use of multiple compute resources
 to solve a computational problem:
@@ -80,7 +80,7 @@ The compute resources are typically:
 1. A single computer with multiple processors/cores;
 2. An arbitrary number of such computers connected by a network.
 
-###GPU CUDA Programming
+###<a id = “gpu”>GPU CUDA Programming</a>
 
 In recent years, modern multi-core and many-core architectures have brought about a 
 revolution in high performance computing. Because it is now possible to incorporate 
