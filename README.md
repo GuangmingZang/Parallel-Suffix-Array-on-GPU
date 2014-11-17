@@ -36,7 +36,7 @@ Parallel Suffix Array on GPU
 1. [Reference](#reference)
 
 
-##<a id =”Abstraction”>Abstraction</a>
+##<a id =”abstraction”>Abstraction</a>
 
 ###Background
 
