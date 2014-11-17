@@ -20,19 +20,20 @@ Parallel Suffix Array on GPU
 
 1. [Abstraction](#abstraction)
 1. [Introduction] (#introduction)
-2. [Genome Matching and Alignment](#genome)
-3. [Parallel Computing](#parallel)
-4. [CUDA GPU Programming](#GPU)
-5. [Suffix Tree and Suffix Array](#suffix)
-6. [DC3 Algorithm](#dc3)
-7. [Parallel DC3 algorithm](#parallel_dc3)
-    1. [Parallel Radix Sort](#radix)
-    2. [Parallel Merge](#merge)
-8. [Performance Optimization](#performance)
-9. [Test and Result](#test)
-10. [Conclusion](#conclusion) 
-11. [Future Work](#future)
-12. [Reference](#reference)
+    1. [Parallel Computing](#parallel)
+    1. [CUDA GPU Programming](#GPU)
+1. The Problem
+    1. [Suffix Tree and Suffix Array](#suffix)
+    1. [DC3 Algorithm](#dc3)
+1. My idea
+    1. [Parallel DC3 algorithm](#parallel_dc3)
+        1. [Parallel Radix Sort](#radix)
+        1. [Parallel Merge](#merge)
+    1. [Performance Optimization](#performance)
+1. [Test and Result](#test)
+1. [Conclusion](#conclusion) 
+1. [Future Work](#future)
+1. [Reference](#reference)
 
 
 ##<a id =”Abstraction”>Abstraction</a>
@@ -52,7 +53,7 @@ evaluation with the state-of-the-art implementation is then carried out.
 The study shows that massively parallel dc3 algorithm under heterogeneous architecture
 is an efficient approach to high-performance bioinformatics applications and web-search engines.
 
-<a id =”introduction”>Introdution</a>
+##<a id =”introduction”>Introdution</a>
 
 
 
