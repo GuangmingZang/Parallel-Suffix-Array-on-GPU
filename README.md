@@ -36,7 +36,7 @@ Parallel Suffix Array on GPU
 1. [Reference](#reference)
 
 
-##<a id =”abstraction”>Abstraction</a>
+##<a id = “abstraction”>Abstraction</a>
 
 ###Background
 
@@ -57,9 +57,9 @@ evaluation with the state-of-the-art implementation is then carried out.
 The study shows that massively parallel dc3 algorithm under heterogeneous architecture
 is an efficient approach to high-performance bioinformatics applications and web-search engines.
 
-##<a id =”introduction”>Introdution</a>
+##<a id = “introduction”>Introdution</a>
 
-###<a id=”parallel”>Parallel Computing</a>
+###<a id= “parallel”>Parallel Computing</a>
 
 From LLNL’s tutorials, parallel computing is the simultaneous use of multiple compute resources
 to solve a computational problem:
@@ -80,7 +80,7 @@ The compute resources are typically:
 1. A single computer with multiple processors/cores;
 2. An arbitrary number of such computers connected by a network.
 
-###<a id =”GPU”>GPU CUDA Programming</a>
+###<a id = “GPU”>GPU CUDA Programming</a>
 
 In recent years, modern multi-core and many-core architectures have brought about a 
 revolution in high performance computing. Because it is now possible to incorporate 
