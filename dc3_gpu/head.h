@@ -1,7 +1,16 @@
-#include<stdio.h>
-#include<string.h>
-#include<stdlib.h>
-#include<time.h>
+//
+//  head.h
+//  dc3 algorithm on GPU
+//
+//  Created by gangliao on 12/22/14.
+//  Copyright (c) 2014 gangliao. All rights reserved.
+//
+
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <time.h>
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
@@ -45,7 +54,7 @@ void print_suffix(char *cc, int i)
 
 int to_i(char c)
 {
-	return (int)c - 65;
+	return (int)c;
 }
 
 
@@ -82,7 +91,7 @@ __global__ void keybits(int* SA12, int* s12, int* s, int n, int i)
 
 	if(index >= n)
 		return;
-	SA12[index] = s[s12[index] + i] - 65;
+	SA12[index] = s[s12[index] + i];
 
 }
 
@@ -233,7 +242,4 @@ __global__ void merge_suffixes(int* SA0, int* SA12, int* SA, int* s, int* s12, i
     		SA[index - n0 + left] = i;
     	}
     }
-
-
-
 }
