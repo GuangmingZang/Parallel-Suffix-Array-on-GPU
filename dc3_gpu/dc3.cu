@@ -20,16 +20,17 @@ void read_data(char *filename, char *buffer, int num){
 
 
 
-
-
 int main(int argc, char* argv[])
 {
 	//freopen("data","r",stdin);
 	//freopen("output.txt","w",stdout);
 
-	clock_t start, end;						    //record time
-	double runTime;
-
+	//clock_t start, end;						    //record time
+	//double runTime;
+	float milliseconds = 0;
+	cudaEvent_t start, stop;
+	cudaEventCreate(&start);
+	cudaEventCreate(&stop);
 
 	char* filename = "genome.txt";				//load the local data set
 
@@ -59,24 +60,21 @@ int main(int argc, char* argv[])
 
 	for(i=0;i<n;i++)							//Ascii 'A' -> integer 0 by 'A' - 65
 	{
-		//inp[i] = to_i(data[i]);
-		//inp[i] = data[i];
 		h_inp[i] = to_i(data[i]);
 	}
 
 	h_inp[i]=0;h_inp[i+1]=0;h_inp[i+2]=0;				//prepare for triples
 	d_inp = h_inp;
 	d_SA = h_SA;
-   // memset(h_SA,0,sizeof(int)*(n+3));      		//initialize the SA array
 
-    start = clock();							//record the start time
 
+	cudaEventRecord(start);
 	suffixArray(d_inp, d_SA, n, MAX_ALPHA);	        //dc3/skew algorithm
 
-	end = clock();								//record the end time
-	runTime = (end - start) / (double) CLOCKS_PER_SEC ;   //run time
-
 	h_SA = d_SA;
+	cudaEventRecord(stop);
+	cudaEventSynchronize(stop);
+	cudaEventElapsedTime(&milliseconds, start, stop);
 
 	for(i = 0 ; i < n ; i++)					//print sorted suffixes from data set
 	{
@@ -84,20 +82,16 @@ int main(int argc, char* argv[])
 		print_suffix(data, h_SA[i]);
 	}
 
-	printf("CPU linear construct Suffix Array\nNUM: %d \t Time: %f Sec\n", n, runTime);
+	printf("GPU construct Suffix Array\nNUM: %d \t Time: %f Sec\n", n, milliseconds/1000);
 
-
+	cudaEventDestroy( start );
+	cudaEventDestroy( stop );
 	free(data);									//free allocated memory
 	return 0;
 }
 
 
-struct mapping {
-				__host__ __device__ int operator()(const int& x) const
-				{
-					return x + x/2 + 1;
-				}
-		};
+
 
 void suffixArray(thrust::device_vector<int>& s, thrust::device_vector<int>& SA, int n, int K) {
 
@@ -109,7 +103,7 @@ void suffixArray(thrust::device_vector<int>& s, thrust::device_vector<int>& SA, 
 	thrust::device_vector<int>d_SA0(n0, 0);
 	thrust::device_vector<int>d_scan(n02+3);
 
-	std::cout << "d_s12 size: " << d_s12.size() << std::endl;
+	//std::cout << "d_s12 size: " << d_s12.size() << std::endl;
 	// S12 initialization:
 	thrust::sequence(d_s12.begin(), d_s12.begin()+n02);
 	thrust::transform(d_s12.begin(), d_s12.begin()+n02, d_s12.begin(), mapping());
@@ -149,10 +143,11 @@ void suffixArray(thrust::device_vector<int>& s, thrust::device_vector<int>& SA, 
 
 	Set_suffix_rank<<<numBlocks, numThreads>>>(pd_s12, pd_SA12, pd_scan, n02, n0);
 
-
+	//for(int i = 0; i < d_s12.size(); i++)
+	//							std::cout << "s12[" << i << "] = " << d_s12[i]<< std::endl;
 
 	int max_rank = d_scan[n02];
-	std::cout << max_rank << std::endl;
+	//std::cout << max_rank << std::endl;
 	//int max_rank = set_suffix_rank(s,s12,SA12,n02,n0);
 
 
@@ -184,18 +179,21 @@ void suffixArray(thrust::device_vector<int>& s, thrust::device_vector<int>& SA, 
 					std::cout << "SA0[" << i << "] = " << d_SA0[i]<< std::endl;
 
 	for(int i = 0; i < d_SA12.size(); i++)
-						std::cout << "SA12[" << i << "] = " << d_SA12[i]<< std::endl;
+					std::cout << "SA12[" << i << "] = " << d_SA12[i]<< std::endl;
+
+
 
 	// merge sorted SA0 suffixes and sorted SA12 suffixes
 	dim3 numBlocks2((n-1)/1024 + 1);
 	merge_suffixes<<<numBlocks, numThreads>>>(pd_SA0, pd_SA12, pd_SA, pd_s, pd_s12, n0, n02, n);
+	cudaDeviceSynchronize();
+	///for(int i = 0; i < SA.size(); i++)
+	//	std::cout << "SA[" << i << "] = " << SA[i]<< std::endl;
+
+	for(int i = 0; i < s.size(); i++)
+		std::cout << "s[" << i << "] = " << (char)s[i]<< std::endl;
 
 
-	//cudaFree(pd_s12);
-	//cudaFree(pd_SA12);
-	//cudaFree(pd_s0);
-	//cudaFree(pd_SA0);
-	//cudaFree(pd_scan);
 
 }
 

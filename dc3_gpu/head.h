@@ -40,6 +40,12 @@ void print_suffix(char *cc, int i);
 
 #define GetI() (SA12[t] < n0 ? SA12[t] * 3 + 1 : (SA12[t] - n0) * 3 + 2)
 
+struct mapping {
+				__host__ __device__ int operator()(const int& x) const
+				{
+					return x + x/2 + 1;
+				}
+		};
 
 void print_suffix(char *cc, int i)
 {
@@ -169,7 +175,7 @@ __global__ void merge_suffixes(int* SA0, int* SA12, int* SA, int* s, int* s12, i
 {
 	int index = blockIdx.x*blockDim.x + threadIdx.x;
 	int left, right, mid;
-	if(index >= n)
+	if(index >= n0 + n02)
 		return;
 
     int i, j;
@@ -182,7 +188,7 @@ __global__ void merge_suffixes(int* SA0, int* SA12, int* SA, int* s, int* s12, i
     	while(left < right)
     	{
     		mid = (left + right) / 2;
-    		if(mid - n0 < n0)
+    		if(SA12[mid - n0] < n0)
     		{
     			j = SA12[mid - n0] * 3 + 1;
 
@@ -195,14 +201,16 @@ __global__ void merge_suffixes(int* SA0, int* SA12, int* SA, int* s, int* s12, i
     		{
     			j = (SA12[mid - n0] - n0) * 3 + 2;
 
-    			if(leq2(s[j], s[j+1], s12[j/3],s[i], s[i+1], s12[i/3+n0]))
+    			if(leq2(s[j], s[j+1], s12[(j+2)/3+((j+2)%3 - 1)*n0],s[i], s[i+1], s12[i/3+n0]))
     			    left = mid + 1;
     			else
     			    right = mid;
     		}
 
     	}
-    	SA[index + left] = i;
+    	//if(i == 0)
+    		printf("%%%%SA[%d] = %d index %d\n", index-n0+left, i, index);
+    	SA[index + left - n0] = i;
 
     }
     else
@@ -224,6 +232,8 @@ __global__ void merge_suffixes(int* SA0, int* SA12, int* SA, int* s, int* s12, i
     				right = mid;
     		}
     		SA[index - n0 + left] = i;
+    		//if(i == 0)
+    	   		printf("@@@SA[%d] = %d (%c %d) index: %d\n", index-n0+left, i, s[i], s12[(i+1)/3+((i+1)%3 - 1)*n0], index);
     	}
     	else
     	{
@@ -234,12 +244,14 @@ __global__ void merge_suffixes(int* SA0, int* SA12, int* SA, int* s, int* s12, i
     		{
     			mid = (left + right)/2;
 
-    			if(leq2(s[SA0[mid]], s[SA0[mid]+1], s12[mid/3+n0],s[i], s[i+1], s12[(i+2)/3+((i+2)%3 - 1)*n0]))
+    			if(leq2(s[SA0[mid]], s[SA0[mid]+1], s12[SA0[mid]/3+n0],s[i], s[i+1], s12[(i+2)/3+((i+2)%3 - 1)*n0]))
     				left = mid + 1;
     			else
     				right = mid;
     		}
     		SA[index - n0 + left] = i;
+
+    		printf("xxxxSA[%d] = %d (%c %c %d) index %d \n", index-n0+left, i, s[i], s[i+1], s12[(i+2)/3+((i+2)%3 - 1)*n0], index);
     	}
     }
 }
