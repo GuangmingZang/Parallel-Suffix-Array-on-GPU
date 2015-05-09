@@ -23,11 +23,7 @@ void read_data(char *filename, char *buffer, int num){
 
 int main(int argc, char* argv[])
 {
-	//freopen("data","r",stdin);
-	//freopen("output.txt","w",stdout);
-
-	//clock_t start, end;						    //record time
-	//double runTime;
+	
 	float milliseconds = 0;
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
@@ -35,12 +31,10 @@ int main(int argc, char* argv[])
 
 	char* filename = "genome.txt";				//load the local data set
 
-
 	int n;										//input size
 
 	char *data;									//data set pointer
 	int i = 0;									//index
-	//int *inp;									//transformed data pointer
 	int *SA;									//Suffix Array pointer
 
 	printf("Please input the size of dataset you want to evaluate (10 - 1000000): \t");
@@ -50,14 +44,10 @@ int main(int argc, char* argv[])
 
 	read_data(filename, data, n);				//read data set from the local file
 
-
-	//inp = (int *)malloc( (n+3)*sizeof(int) );	//dynamic allocate memory
-	//SA  = (int *)malloc( (n+3)*sizeof(int) );
 	thrust::host_vector<int> h_inp(n + 3);
 	thrust::host_vector<int> h_SA(n + 3, 0);
 	thrust::device_vector<int>d_inp;
 	thrust::device_vector<int>d_SA;
-
 
 	for (i = 0; i<n; i++)							//Ascii 'A' -> integer 0 by 'A' - 65
 	{
@@ -76,12 +66,6 @@ int main(int argc, char* argv[])
 	cudaEventRecord(stop);
 	cudaEventSynchronize(stop);
 	cudaEventElapsedTime(&milliseconds, start, stop);
-
-	/*for (i = 0; i < n; i++)					//print sorted suffixes from data set
-	{
-		printf("No.%d Index.", i);
-		print_suffix(data, h_SA[i]);
-	}*/
 
 	printf("GPU construct Suffix Array\nNUM: %d \t Time: %f Sec\n", n, milliseconds / 1000);
 
@@ -129,7 +113,6 @@ void suffixArray(thrust::device_vector<int>& s, thrust::device_vector<int>& SA, 
 
 	//radix sort - using SA12 to store keys
 	keybits <<<numBlocks, numThreads >>>(pd_SA12, pd_s12, pd_s, n02, 2);
-	//cudaThreadSynchronize();
 
 	thrust::sort_by_key(d_SA12.begin(), d_SA12.begin() + n02, d_s12.begin());
 
@@ -151,13 +134,8 @@ void suffixArray(thrust::device_vector<int>& s, thrust::device_vector<int>& SA, 
 
 	Set_suffix_rank <<<numBlocks, numThreads >>>(pd_s12, pd_SA12, pd_scan, n02, n0);
 
-	//for(int i = 0; i < d_s12.size(); i++)
-	//							std::cout << "s12[" << i << "] = " << d_s12[i]<< std::endl;
 
 	int max_rank = d_scan[n02];
-	//std::cout << max_rank << std::endl;
-	//int max_rank = set_suffix_rank(s,s12,SA12,n02,n0);
-
 
 	// if max_rank is less than the size of s12, we have a repeat. repeat dc3.
 	// else generate the suffix array of s12 directly
@@ -171,11 +149,8 @@ void suffixArray(thrust::device_vector<int>& s, thrust::device_vector<int>& SA, 
 		Compute_SA_From_UniqueRank <<<numBlocks, numThreads >>>(pd_s12, pd_SA12, n02);
 	}
 
-
-
-
 	InitScan2 <<<numBlocks, numThreads >>>(pd_SA12, pd_scan, n0, n02);
-	thrust::exclusive_scan(d_scan.begin(), d_scan.begin() + n02, d_scan.begin()); //£¿£¿£¿£¿£¿£¿£¿£¿£¿£¿£¿£¿£¿£¿£¿£¿£¿
+	thrust::exclusive_scan(d_scan.begin(), d_scan.begin() + n02, d_scan.begin()); 
 	Set_S0 <<<numBlocks, numThreads >>>(pd_s0, pd_SA12, pd_scan, n0, n02);
 
 
@@ -184,33 +159,9 @@ void suffixArray(thrust::device_vector<int>& s, thrust::device_vector<int>& SA, 
 	thrust::sort_by_key(d_SA0.begin(), d_SA0.begin() + n0, d_s0.begin());
 	d_SA0 = d_s0;
 
-	/*
-	for (int i = 0; i < d_SA0.size(); i++)
-		std::cout << "SA0[" << i << "] = " << d_SA0[i] << std::endl;
-
-	for (int i = 0; i < d_SA12.size(); i++)
-	{ 
-		if (d_SA12[i] < n0)
-			std::cout << "SA12[" << i << "] = " << d_SA12[i] * 3 + 1 << std::endl;
-		else
-			std::cout << "SA12[" << i << "] = " << (d_SA12[i]-n0) * 3 + 2 << std::endl;
-	}
-	*/
 	
-
 	// merge sorted SA0 suffixes and sorted SA12 suffixes
 	dim3 numBlocks2((n - 1) / 1024 + 1);
 	merge_suffixes <<<numBlocks, numThreads >>>(pd_SA0, pd_SA12, pd_SA, pd_s, pd_s12, n0, n02, n);
-	//cudaDeviceSynchronize();
-	///for(int i = 0; i < SA.size(); i++)
-	//	std::cout << "SA[" << i << "] = " << SA[i]<< std::endl;
-
-	//for (int i = 0; i < s.size(); i++)
-		//std::cout << "s[" << i << "] = " << (char)s[i] << std::endl;
-	//d_SA0.clear();
-	//d_SA0.shrink_to_fit();
-
-	//d_SA12.clear();
-	//d_SA12.shrink_to_fit();
 
 }
